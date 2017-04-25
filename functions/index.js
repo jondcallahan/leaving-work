@@ -6,9 +6,11 @@ const timeInTraffic = (req, res) => {
   const destination = req.query.destination || req.body.destination || functions.config().maps.destination || res.send(400)
   const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin}&destinations=${destination}&traffic_model=best_guess&departure_time=now&key=${functions.config().maps.apikey}`
 
+  console.log(`Origin: ${origin}`)
+  console.log(`Time: ${req.query.time}`)
+
   // Only send this if it's between 4PM - 8PM pacific
   const currentHour = (new Date()).getUTCHours()
-  console.log('Time: ' + req.query.time)
   if (currentHour === 23 || currentHour < 3) {
     fetch(url)
       .then(mapsResponse => mapsResponse.json().then(mapsJSON => {
@@ -21,7 +23,7 @@ const timeInTraffic = (req, res) => {
       }))
       .catch(e => {res.error(e)})
   } else {
-    res.send(418)
+    res.send(200)
   }
 }
 
